@@ -1,0 +1,23 @@
+diff --git a/generate_emu_config_old/generate_emu_config.py b/generate_emu_config_old/generate_emu_config.py
+index b8df9ba..39ce2ae 100644
+--- a/generate_emu_config_old/generate_emu_config.py
++++ b/generate_emu_config_old/generate_emu_config.py
+@@ -311,16 +311,14 @@ EXTRA_FEATURES_CONVENIENT = {
+     }
+ }
+ 
++XDG_DATA_HOME = os.environ.get("XDG_DATA_HOME", os.path.expanduser("~/.local/share"))
+ 
+ def get_exe_dir(relative = False):
+     # https://pyinstaller.org/en/stable/runtime-information.html
+     if relative:
+         return os.path.curdir
+ 
+-    if getattr(sys, 'frozen', False) and hasattr(sys, '_MEIPASS'):
+-        return os.path.dirname(sys.executable)
+-    else:
+-        return os.path.dirname(os.path.abspath(__file__))
++    return os.path.join(XDG_DATA_HOME, "gbe-tools")
+ 
+ def get_stats_schema(client, game_id, owner_id):
+     message = MsgProto(EMsg.ClientGetUserStats)
