@@ -14,6 +14,11 @@
 
       perSystem = { self', pkgs, ... }: {
         packages = import ./packages.nix { inherit pkgs; };
+        devShells = {
+          bwrap = import ./shell.nix { inherit pkgs; use-bwrap = true; };
+          no-bwrap = import ./shell.nix { inherit pkgs; use-bwrap = false; };
+          default = self'.devShells.bwrap;
+        };
       };
     };
 }
