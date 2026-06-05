@@ -12,8 +12,8 @@
         "x86_64-linux"
       ];
 
-      perSystem = { self', pkgs, ... }: {
-        packages = import ./packages.nix { inherit pkgs; };
+      perSystem = { self', pkgs, lib, ... }: {
+        packages = lib.zipAttrsWith (_: vals: lib.head vals) (lib.attrValues (import ./packages.nix { inherit pkgs; }));
         devShells = {
           bwrap = import ./shell.nix { inherit pkgs; use-bwrap = true; };
           no-bwrap = import ./shell.nix { inherit pkgs; use-bwrap = false; };

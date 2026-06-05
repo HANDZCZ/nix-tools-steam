@@ -5,7 +5,7 @@
 
 let
   lib = pkgs.lib;
-  packages = builtins.attrValues (import ./packages.nix { inherit pkgs; });
+  packages = builtins.attrValues (import ./packages.nix { inherit pkgs; }).apps;
 in pkgs.mkShell {
   packages = with pkgs; []
     ++ lib.optional use-bwrap pkgs.bubblewrap
