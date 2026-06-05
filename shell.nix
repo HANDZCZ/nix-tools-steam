@@ -23,7 +23,7 @@ in pkgs.mkShell {
       --overlay "$WORKDIR/home" "$WORKDIR/bwrap-tmp/home" /home \
       --bind "$WORKDIR/work" "$WORKDIR/work" \
       --dev /dev \
-      $SHELL
+      ${lib.getExe pkgs.bash}
   '';
 }
 
