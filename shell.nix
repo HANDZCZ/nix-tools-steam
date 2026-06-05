@@ -18,7 +18,12 @@ in pkgs.mkShell {
 
     echo "Entering bubblewrap!"
     cd "$WORKDIR/work"
-    exec bwrap --ro-bind / / --overlay-src /home --overlay "$WORKDIR/home" "$WORKDIR/bwrap-tmp/home" /home --bind "$WORKDIR/work" "$WORKDIR/work" $SHELL
+    exec bwrap --ro-bind / / \
+      --overlay-src /home \
+      --overlay "$WORKDIR/home" "$WORKDIR/bwrap-tmp/home" /home \
+      --bind "$WORKDIR/work" "$WORKDIR/work" \
+      --dev /dev \
+      $SHELL
   '';
 }
 
