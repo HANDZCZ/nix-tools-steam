@@ -6,7 +6,7 @@
   python3,
   extraPythonPackages ? [],
   dotnet-runtime_9,
-  runCommand,
+  p7zip,
   makeWrapper,
   pkgs,
   ...
@@ -14,8 +14,8 @@
 
 let
   pname = "accela";
-  version = "20260524150213";
-  hash = "sha256-G6lHo8TQYMkGSVGVhHHiFm3JlwrO8iliKWvFOUI+UcY=";
+  version = "20260512201930";
+  hash = "sha256-Zu7ES0ecHIiUEcHZJZ+fBNqXIlz9BCBtWgmvBhd6eSY=";
 
   pythonEnv = python3.withPackages (pypkgs: with pypkgs; [
       pyqt6
@@ -31,15 +31,18 @@ let
     ] ++ extraPythonPackages
   );
 
-  archive = fetchurl {
+  appImage = fetchurl {
     inherit hash;
-    url = "https://github.com/ciscosweater/enter-the-wired/releases/download/${version}/ACCELA-${version}-linux.tar.gz";
-  };
+    url = "https://github.com/HANDZCZ/nix-tools-steam/releases/download/Accela-v${version}/Accela-v${version}.7z";
 
-  appImage = runCommand "${pname}.AppImage" {} ''
-    tar -xf ${archive} --strip-components=1 bin/
-    mv *.AppImage $out
-  '';
+    nativeBuildInputs = [ p7zip ];
+
+    downloadToTemp = true;
+    postFetch = ''
+      7z e "$downloadedFile" "bin/ACCELA.AppImage"
+      install -Dm 444 "ACCELA.AppImage" "$out"
+    '';
+  };
 
   appimageContents = appimageTools.extract {
     inherit pname version;
