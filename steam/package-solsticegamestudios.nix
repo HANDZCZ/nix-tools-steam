@@ -19,9 +19,9 @@ let
       hash = "sha256-MGhzIAy5uLulb57oz6OZ7pHFweHIDxi0WyjnPfGsA/k=";
     };
   });
-in python3Packages.buildPythonPackage rec {
+in python3Packages.buildPythonPackage {
   pname = "steam";
-  version = "git-1373e885f26bb636225443787f54d4082283e5f3";
+  version = "git-${rev}";
   pyproject = true;
 
   src = fetchFromGitHub {
