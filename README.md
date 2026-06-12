@@ -1,8 +1,8 @@
 
 # Tools for Steam games
 
-This repository provides [gbe_fork_tools](https://github.com/alex47exe/gse_fork_tools) for Goldberg emulator (specifically [gbe_fork](https://github.com/Detanup01/gbe_fork))
-and repackaged [accela](https://github.com/ciscosweater/enter-the-wired) from AppImage.
+This repository provides [gbe_fork_tools](https://github.com/Detanup01/gbe_fork_tools) for Goldberg emulator (specifically [gbe_fork](https://github.com/Detanup01/gbe_fork))
+and repackaged accela from AppImage.
 
 It also provides dev shell with or without bubblewrap for sandboxing.
 
