@@ -64,6 +64,7 @@ in stdenv.mkDerivation (finalAttrs: {
 
   buildInputs = [
     dotnet-runtime_9
+    pythonEnv
   ];
 
   dontBuild = true;
