@@ -19,6 +19,21 @@ nix-tools-steam = {
 
 If some package stops working, try removing nixpkgs override.
 
+## How to install Accela and/or gbe_tools
+
+You just need to add the package to either `environment.systemPackages` or `home.packages`,
+but not both, that could cause problems.
+
+Example usage:
+```nix
+environment.systemPackages = let
+  nix-tools-steam_packages = inputs.nix-tools-steam.packages.${pkgs.stdenv.hostPlatform.system};
+in [
+  nix-tools-steam_packages.accela
+  nix-tools-steam_packages.gbe_tools
+];
+```
+
 ## How to install SLSsteam
 
 To install SLSsteam you just need to override steam package and add `LD_AUDIT="/PATH_TO_PKG/library-inject.so:/PATH_TO_PKG/SLSsteam.so"` environmental variable.
