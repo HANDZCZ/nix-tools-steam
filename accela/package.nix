@@ -8,6 +8,9 @@
   dotnet-runtime_9,
   p7zip,
   makeWrapper,
+  imagemagick,
+  makeDesktopItem,
+  copyDesktopItems,
   pkgs,
   ...
 }:
@@ -55,6 +58,8 @@ in stdenv.mkDerivation (finalAttrs: {
 
   nativeBuildInputs = [
     makeWrapper
+    imagemagick
+    copyDesktopItems
   ];
 
   buildInputs = [
@@ -78,6 +83,24 @@ in stdenv.mkDerivation (finalAttrs: {
 
     runHook postInstall
   '';
+
+  postInstall = ''
+    for i in 16 24 48 64 96 128 256 512; do
+      mkdir -p $out/share/icons/hicolor/''${i}x''${i}/apps
+      convert -background none -resize ''${i}x''${i} ./accela.png $out/share/icons/hicolor/''${i}x''${i}/apps/${pname}.png
+    done
+  '';
+
+  desktopItems = [
+    (makeDesktopItem {
+      name = pname;
+      desktopName = "Accela";
+      icon = pname;
+      exec = finalAttrs.meta.mainProgram;
+      categories = [ "Utility" ];
+      mimeTypes = [ "x-scheme-handler/accela" ];
+    })
+  ];
 
   meta = {
     description = "ACCELA extracted AppImage package for Enter The Wired";
