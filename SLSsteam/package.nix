@@ -6,6 +6,7 @@
   lib,
   openssl,
   curl,
+  libnotify,
   ...
 }:
 
@@ -30,11 +31,18 @@ in stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     openssl
     curl
+    libnotify
   ];
 
   patches = [
     ./dont-build-ticket-grabber.patch
+    ./replace-notify-send-with-variable.patch
   ];
+
+  postPatch = ''
+    substituteInPlace ./src/log.hpp \
+      --replace-fail "@@notify-send@@" ${lib.getExe libnotify}
+  '';
 
   installPhase = ''
     runHook preInstall

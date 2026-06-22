@@ -1,0 +1,33 @@
+From 367349715247a555cfb2c1d9d9d4a642e8a28f6d Mon Sep 17 00:00:00 2001
+From: HANDZCZ <handz@email.cz>
+Date: Mon, 22 Jun 2026 18:29:01 +0200
+Subject: [PATCH] Replace notify-send with variable
+
+---
+ src/log.hpp | 6 +++---
+ 1 file changed, 3 insertions(+), 3 deletions(-)
+
+diff --git a/src/log.hpp b/src/log.hpp
+index 0d0a5c2..24d19c6 100644
+--- a/src/log.hpp
++++ b/src/log.hpp
+@@ -72,13 +72,13 @@ class CLog
+ 		{
+ 			//TODO: Fix possible breakage when there's only one " in formatted
+ 			case LogLevel::NotifyShort:
+-				notifySS << "notify-send -t 10000 -u \"normal\" \"SLSsteam\" \"" << formatted.c_str() << "\"";
++				notifySS << "@@notify-send@@ -t 10000 -u \"normal\" \"SLSsteam\" \"" << formatted.c_str() << "\"";
+ 				break;
+ 			case LogLevel::NotifyLong:
+-				notifySS << "notify-send -t 30000 -u \"normal\" \"SLSsteam\" \"" << formatted.c_str() << "\"";
++				notifySS << "@@notify-send@@ -t 30000 -u \"normal\" \"SLSsteam\" \"" << formatted.c_str() << "\"";
+ 				break;
+ 			case LogLevel::Warn:
+-				notifySS << "notify-send -u \"critical\" \"SLSsteam\" \"" << formatted.c_str() << "\"";
++				notifySS << "@@notify-send@@ -u \"critical\" \"SLSsteam\" \"" << formatted.c_str() << "\"";
+ 				break;
+ 
+ 			default:
+-- 
+2.54.0
+
