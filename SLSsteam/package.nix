@@ -11,8 +11,8 @@
 }:
 
 let
-  rev = "981da676e76f72b1ed3c387f192509ac9a1b91e4";
-  hash = "sha256-gDNHztsHGFAmbbj7Gcu8vWcFU5+4c1EeGU4lhb7Hnqo=";
+  rev = "6655cb8cc17b6a38afa87b730b8fd29648b6c9fc";
+  hash = "sha256-oAS8PwhlItu1yVuK8w0KUSYOubriNPKpU+pgZ2h5MNs=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
   version = "git-${rev}";
