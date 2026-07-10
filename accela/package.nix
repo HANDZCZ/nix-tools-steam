@@ -104,8 +104,7 @@ in stdenv.mkDerivation (finalAttrs: {
   ];
 
   meta = {
-    description = "ACCELA extracted AppImage package for Enter The Wired";
-    homepage = "https://github.com/ciscosweater/enter-the-wired";
+    description = "Accela is a tool used to download and manage Steam game files";
     license = lib.licenses.mit;
     mainProgram = "accela";
   };
