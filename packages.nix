@@ -4,6 +4,7 @@
   apps = {
     accela = pkgs.callPackage ./accela/package.nix {};
     gbe_tools = pkgs.callPackage ./gbe_tools/package.nix {};
+    samrewritten = pkgs.callPackage ./SamRewritten/package.nix {};
   };
   pkgs = {
     steam-solsticegamestudios = pkgs.callPackage ./steam/package-solsticegamestudios.nix {};
