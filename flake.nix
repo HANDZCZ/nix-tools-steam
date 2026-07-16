@@ -29,6 +29,10 @@
             cpuid_fault_emulation = linuxPackages.callPackage ./HV_bypass/cpuid_fault_emulation/package.nix {};
           };
         };
+
+        nixosModules = {
+          hv-bypass = import ./HV_bypass/nixos.nix;
+        };
       };
     };
 }
