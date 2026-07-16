@@ -23,5 +23,12 @@
           default = self'.devShells.bwrap;
         };
       };
+      flake = {
+        mkKernelPackages = linuxPackages: {
+          hv-bypass = {
+            cpuid_fault_emulation = linuxPackages.callPackage ./HV_bypass/cpuid_fault_emulation/package.nix {};
+          };
+        };
+      };
     };
 }
