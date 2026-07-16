@@ -7,6 +7,18 @@ in {
   options.gaming.hv-bypass = with lib; {
     enable = mkEnableOption "hypervisor bypass";
 
+    umip = {
+      disable = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Whether to add User Mode Instruction Prevention (UMIP) to blacklisted kernel modules (disable it).
+
+          Only required for Intel 9th gen and newer, AMD Ryzen 3000 and newer and Steam Deck
+        '';
+      };
+    };
+
     cpuid_fault_emulation = {
       enable = mkOption {
         type = types.bool;
@@ -43,6 +55,8 @@ in {
   config = let
     cpuid_autoLoad = cfg.cpuid_fault_emulation.enable && cfg.cpuid_fault_emulation.autoLoad;
   in lib.mkIf cfg.enable {
+    boot.kernelParams = lib.mkIf cfg.umip.disable [ "clearcpuid=umip" ];
+
     boot.extraModulePackages =
       lib.optionals cfg.cpuid_fault_emulation.enable [ cfg.cpuid_fault_emulation.package ];
 
