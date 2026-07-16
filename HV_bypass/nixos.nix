@@ -17,6 +17,17 @@ in {
           Only required for Intel 9th gen and newer, AMD Ryzen 3000 and newer and Steam Deck
         '';
       };
+
+      patchKernel = mkOption {
+        type = types.bool;
+        default = false;
+        description = ''
+          Whether to patch User Mode Instruction Prevention (UMIP) dummy_limit in kernel source.
+          This will rebuild the kernel!
+
+          Only required for Intel 9th gen and newer, AMD Ryzen 3000 and newer and Steam Deck
+        '';
+      };
     };
 
     cpuid_fault_emulation = {
@@ -53,9 +64,19 @@ in {
   };
 
   config = let
+    umip-patch = {
+      name = "Adjust GDT limit emulation";
+      patch = ./umip/x86-umip-Adjust-GDT-limit-emulation.patch;
+    };
     cpuid_autoLoad = cfg.cpuid_fault_emulation.enable && cfg.cpuid_fault_emulation.autoLoad;
   in lib.mkIf cfg.enable {
+    warnings = lib.optional (cfg.umip.disable && cfg.umip.patchKernel) ''
+      Hypervisor bypass: umip.disabled and umip.patchKernel are both enabled
+                         You are building UMIP patched kernel, that won't have UMIP enabled!
+    '';
+
     boot.kernelParams = lib.mkIf cfg.umip.disable [ "clearcpuid=umip" ];
+    boot.kernelPatches = lib.mkIf cfg.umip.patchKernel [ umip-patch ];
 
     boot.extraModulePackages =
       lib.optionals cfg.cpuid_fault_emulation.enable [ cfg.cpuid_fault_emulation.package ];

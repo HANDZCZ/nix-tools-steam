@@ -1,0 +1,98 @@
+From e08b3ce381ed1cfd03db0d35a98b6d62fc18fd15 Mon Sep 17 00:00:00 2001
+From: Christian Pfeiffer <cpfeiffer@rev-crew.info>
+Date: Thu, 16 Jul 2026 10:52:30 +0200
+Subject: [PATCH] x86/umip: Adjust GDT limit emulation
+
+At the moment, a GDT limit of 0 is returned, to indicate that the GDT
+descriptor is bogus, since the base address is bogus.
+
+However, a GDT limit of 0 still implies that the GDT descriptor at the returned
+base is one byte long, since the GDT limit specifies the last byte of
+the GDT descriptor. This is specifically pointed out in the Intel
+Software Architecture manual.
+
+Since GDT limits should, according to the Intel Software Architecture
+manual, be a multiple of 8 bytes minus 1, a limit of 0 is also
+unexpected for that reason.
+
+Certain digital rights management software appears to use the GDT limit
+as a data point to lock the system to, this choice of 0 has the
+practical effect that switching UMIP on or off can make a
+reauthorisation necessary.
+
+As the GDT limit is hardcoded to be (GDT_ENTRIES * 8) - 1 anyway, we can
+just as well return GDT_SIZE - 1 and thus return the same limit
+regardless of whether UMIP is on or off, thus avoiding this spurious
+difference between both states. This also aligns with what software
+should expect the GDT limit to be according to the manual.
+
+Fixes: 1e5db223696a ("x86/umip: Add emulation code for UMIP
+instructions")
+Signed-off-by: Christian Pfeiffer <cpfeiffer@rev-crew.info>
+---
+ arch/x86/kernel/umip.c | 17 +++++++++++++----
+ 1 file changed, 13 insertions(+), 4 deletions(-)
+
+diff --git a/arch/x86/kernel/umip.c b/arch/x86/kernel/umip.c
+index 3ce99cbcf187..7cc2bfc6c563 100644
+--- a/arch/x86/kernel/umip.c
++++ b/arch/x86/kernel/umip.c
+@@ -7,10 +7,12 @@
+  */
+ 
+ #include <linux/uaccess.h>
++#include <asm/desc.h>
+ #include <asm/umip.h>
+ #include <asm/traps.h>
+ #include <asm/insn.h>
+ #include <asm/insn-eval.h>
++#include <asm/segment.h>
+ #include <linux/ratelimit.h>
+ 
+ #undef pr_fmt
+@@ -43,7 +45,9 @@
+  * such as WineHQ rely on the result being located in the kernel memory space,
+  * not the actual location of the table. The result is emulated as a hard-coded
+  * value that, lies close to the top of the kernel memory. The limit for the GDT
+- * and the IDT are set to zero.
++ * is set to GDT_SIZE - 1 to match the regular value without UMIP emulation.
++ * For IDT, the limit is set to (IDT_ENTRIES * sizeof(gate_desc)) - 1, matching
++ * the regular value of IDT_TABLE_SIZE.
+  *
+  * The instruction SMSW is emulated to return the value that the register CR0
+  * has at boot time as set in the head_32.
+@@ -64,6 +68,8 @@
+ 
+ #define UMIP_DUMMY_GDT_BASE 0xfffffffffffe0000ULL
+ #define UMIP_DUMMY_IDT_BASE 0xffffffffffff0000ULL
++#define UMIP_DUMMY_GDT_LIMIT (GDT_SIZE - 1)
++#define UMIP_DUMMY_IDT_LIMIT ((IDT_ENTRIES * sizeof(gate_desc)) - 1)
+ 
+ /*
+  * The SGDT and SIDT instructions store the contents of the global descriptor
+@@ -229,16 +235,19 @@ static int emulate_umip_insn(struct insn *insn, int umip_inst,
+ 	 */
+ 	if (umip_inst == UMIP_INST_SGDT || umip_inst == UMIP_INST_SIDT) {
+ 		u64 dummy_base_addr;
+-		u16 dummy_limit = 0;
++		u16 dummy_limit;
+ 
+ 		/* SGDT and SIDT do not use registers operands. */
+ 		if (X86_MODRM_MOD(insn->modrm.value) == 3)
+ 			return -EINVAL;
+ 
+-		if (umip_inst == UMIP_INST_SGDT)
++		if (umip_inst == UMIP_INST_SGDT) {
+ 			dummy_base_addr = UMIP_DUMMY_GDT_BASE;
+-		else
++			dummy_limit = UMIP_DUMMY_GDT_LIMIT;
++		} else {
+ 			dummy_base_addr = UMIP_DUMMY_IDT_BASE;
++			dummy_limit = UMIP_DUMMY_IDT_LIMIT;
++		}
+ 
+ 		/*
+ 		 * 64-bit processes use the entire dummy base address.
+-- 
+2.55.0
+
