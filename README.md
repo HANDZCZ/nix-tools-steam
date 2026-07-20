@@ -39,6 +39,41 @@ in pkgs.steam.override {
 };
 ```
 
+## How to install/enable hypervisor bypass
+
+For hypervisor bypass, you need:
+1. UMIP (User Mode Instruction Prevention) to return the right values
+1. support for CPUID Faulting
+1. modified proton build
+
+> In some games, you will need to replace `reflex.dll`, and some games won't even run until the bypass gets updated.
+
+UMIP support is achieved in multiple ways, and you should only **choose one**.
+- disable kernel's UMIP
+- patch the kernel
+- use a kernel module (recommended)
+
+For cpus that don't support CPUID Faulting, you will need to enable the cpuid_fault_emulation kernel module.
+For this kernel module, you can also choose to load it on boot,
+but if you choose to do so, you won't have hardware virtualisation!
+
+Example config:
+```nix
+imports = [
+  inputs.nix-tools-steam.nixosModules.hv-bypass
+];
+
+gaming.hv-bypass = {
+  enable = true;
+  umip.kernelModule.enable = true;
+  cpuid_fault_emulation.enable = true;
+};
+```
+
+If you read all this (maybe even copied the example) and don't understand what you are supposed to do/enable/use,
+then please read the descriptions on the options in `hv-bypass` NixOS module for more info.
+If even then you still have no idea what to do, please read up on how hypervisor bypass works on Linux, what you need, and when!
+
 ## How to install other packages
 
 You just need to add the package to either `environment.systemPackages` or `home.packages`,
