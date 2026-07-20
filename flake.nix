@@ -16,6 +16,7 @@
   };
 
   outputs = {
+    self,
     flake-parts,
     ...
   } @ inputs: flake-parts.lib.mkFlake { inherit inputs; } {
@@ -43,6 +44,56 @@
 
         nixosModules = {
           hv-bypass = import ./HV_bypass/nixos.nix self;
+        };
+
+        nixosConfigurations = let
+          mkHost = module: inputs.nixpkgs.lib.nixosSystem {
+            system = "x86_64-linux";
+            modules = [
+              ({ lib, ... }: {
+                services.xserver.xkb.layout = "cz";
+                console = {
+                  font = "Lat2-Terminus16";
+                  useXkbConfig = lib.mkDefault true;
+                };
+
+                users.users.nix = {
+                  isNormalUser = true;
+                  initialPassword = "nix";
+                  extraGroups = [ "wheel" ];
+                };
+
+                system.stateVersion = lib.trivial.release;
+              })
+              module
+            ];
+          };
+        in {
+          test-hv-bypass = mkHost ({ pkgs, ... }: {
+            imports = [
+              self.nixosModules.hv-bypass
+            ];
+
+            boot.kernelPackages = pkgs.linuxPackages_latest;
+            environment.systemPackages = [
+              self.packages.${pkgs.stdenv.hostPlatform.system}.test_umip
+            ];
+
+            gaming.hv-bypass = {
+              enable = true;
+
+              umip = {
+                #disable = true;
+                #patchKernel = true;
+                kernelModule.enable = true;
+              };
+
+              cpuid_fault_emulation = {
+                enable = true;
+                #autoLoad = true;
+              };
+            };
+          });
         };
       };
     };
