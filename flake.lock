@@ -38,7 +38,31 @@
     "root": {
       "inputs": {
         "flake-parts": "flake-parts",
-        "nixpkgs": "nixpkgs"
+        "nixpkgs": "nixpkgs",
+        "umip-kmod": "umip-kmod"
+      }
+    },
+    "umip-kmod": {
+      "inputs": {
+        "flake-parts": [
+          "flake-parts"
+        ],
+        "nixpkgs": [
+          "nixpkgs"
+        ]
+      },
+      "locked": {
+        "lastModified": 1784569798,
+        "narHash": "sha256-lCj0fvkoZrw2DSLaVPlgdyKG553iQhC39tsK0GlpC+k=",
+        "owner": "HANDZCZ",
+        "repo": "umip-kmod",
+        "rev": "c1ff7d4856e14a3c658376f80b5978bf83f31067",
+        "type": "github"
+      },
+      "original": {
+        "owner": "HANDZCZ",
+        "repo": "umip-kmod",
+        "type": "github"
       }
     }
   },
