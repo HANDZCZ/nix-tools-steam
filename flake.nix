@@ -31,7 +31,7 @@
         };
 
         nixosModules = {
-          hv-bypass = import ./HV_bypass/nixos.nix;
+          hv-bypass = import ./HV_bypass/nixos.nix self;
         };
       };
     };

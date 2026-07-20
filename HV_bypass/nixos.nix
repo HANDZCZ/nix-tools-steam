@@ -1,8 +1,8 @@
-{ config, lib, ... }:
+flake: { config, lib, ... }:
 
 let
   cfg = config.gaming.hv-bypass;
-  kernelPackages = config.boot.kernelPackages;
+  kernel-pkgs = flake.mkKernelPackages config.boot.kernelPackages;
 in {
   options.gaming.hv-bypass = with lib; {
     enable = mkEnableOption "hypervisor bypass";
@@ -43,8 +43,7 @@ in {
 
       package = mkOption {
         type = types.package;
-        default = kernelPackages.callPackage ./cpuid_fault_emulation/package.nix {};
-        defaultText = literalExpression "config.boot.kernelPackages.callPackage /path/to/package.nix {}";
+        default = kernel-pkgs.hv-bypass.cpuid_fault_emulation;
         description = ''
           The kernel module package to install.
           Automatically builds against your system's active kernel.
