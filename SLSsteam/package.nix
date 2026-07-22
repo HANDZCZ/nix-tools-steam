@@ -11,8 +11,8 @@
 }:
 
 let
-  rev = "6655cb8cc17b6a38afa87b730b8fd29648b6c9fc";
-  hash = "sha256-oAS8PwhlItu1yVuK8w0KUSYOubriNPKpU+pgZ2h5MNs=";
+  rev = "c09357dabe9547d49f8416b6d2d948f674cbc4b9";
+  hash = "sha256-Kq1g3BaHa0KtBZ/dj2QqIlLXfKhQGvJeSwXfPeHElHM=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
   version = "git-${rev}";
@@ -34,15 +34,13 @@ in stdenv.mkDerivation (finalAttrs: {
     libnotify
   ];
 
-  patches = [
-    ./dont-build-ticket-grabber.patch
-    ./replace-notify-send-with-variable.patch
-  ];
-
   postPatch = ''
     substituteInPlace ./src/log.hpp \
-      --replace-fail "@@notify-send@@" ${lib.getExe libnotify}
+      --replace-fail "notify-send" ${lib.getExe libnotify}
+    substituteInPlace ./src/curl.cpp \
+      --replace-fail "/bin/curl" ${lib.getExe curl}
   '';
+
 
   installPhase = ''
     runHook preInstall
