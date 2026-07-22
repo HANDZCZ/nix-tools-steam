@@ -9,8 +9,8 @@
 }:
 
 let
-  rev = "8a084deae9621b0180597b1d104de74c50e49b2e";
-  hash = "sha256-m+6zYZV1e7ii10ql7edYxBZY5Yo5mbpt8UyKaGsfYLY=";
+  rev = "8e8fee5ed7fd2d231d42ab6ec6364e2f8c9bbb1c";
+  hash = "sha256-Pn8qC7Fleh3jPZatjErrL6CSnTLutZn8zwQ3z7ltbko=";
 
   pythonOv = python3.override {
     packageOverrides = final: prev: {
