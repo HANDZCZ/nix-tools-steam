@@ -13,16 +13,16 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "SamRewritten";
-  version = "1.4.5";
+  version = "1.4.7";
 
   src = fetchFromGitHub {
     owner = "PaulCombal";
     repo = "SamRewritten";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-sSZC7yN/WuMYkdcPmHyvasaWRFzppSxmlS1bYLZGvyM=";
+    hash = "sha256-IUiEr9JfxZb3FBfQGoN3Ck7I7Ypk6SGIlI2oj3sbsvc=";
   };
 
-  cargoHash = "sha256-YKiICPP6z9lZWqdoPOYRq+0mmz7jY3/eJd7XzN8Vmnk=";
+  cargoHash = "sha256-XA/7wcYUmDf0+Ku3vSpzpuRBZGepiH5+dYgOh2T0Akw=";
 
   dontWrapGApps = true;
 
