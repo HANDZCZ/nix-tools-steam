@@ -1,0 +1,28 @@
+From f042ca4769a7de26f53823f397d5371bace9b4ae Mon Sep 17 00:00:00 2001
+From: HANDZCZ <handz@email.cz>
+Date: Sat, 15 Aug 2026 14:08:00 +0200
+Subject: [PATCH] Remove check for strings command
+
+---
+ src/linuwux.sh | 5 -----
+ 1 file changed, 5 deletions(-)
+
+diff --git a/src/linuwux.sh b/src/linuwux.sh
+index 760f45e..7d63c9a 100644
+--- a/src/linuwux.sh
++++ b/src/linuwux.sh
+@@ -28,11 +28,6 @@ if [ "${1-}" = "--version" ] || [ "${1-}" = "-V" ]; then
+         echo "linuwux: library not found: $lib" >&2
+         exit 1
+     fi
+-    if ! command -v strings >/dev/null 2>&1; then
+-        echo "linuwux: 'strings' (binutils) not found -- can't read the version tag" >&2
+-        echo "  every launch also prints it to stderr regardless (not just under LINUWUX_DEBUG)" >&2
+-        exit 1
+-    fi
+     ver=$(strings "$lib" | sed -n 's/^linuwux //p' | head -1)
+     echo "linuwux ${ver:-unknown} ($lib)"
+     exit 0
+-- 
+2.54.0
+
