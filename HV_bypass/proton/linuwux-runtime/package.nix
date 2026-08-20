@@ -1,6 +1,7 @@
 {
   stdenv,
   fetchFromGitHub,
+  fetchpatch2,
   binutils,
   gnused,
   coreutils,
@@ -23,6 +24,11 @@ in stdenv.mkDerivation (finalAttrs: {
 
   patches = [
     ./Remove-check-for-strings-command.patch
+    (fetchpatch2 {
+      name = "Fix-SEGVs-during-loader-startup.diff";
+      url = "https://github.com/brcly/linuwux-runtime/commit/98a7cab53150e423a2786a5b0df0107a6145a671.diff?full_index=1";
+      hash = "sha256-QQNzXBDdUSaWap4/RLNeLGTb4Ogf929+joMmSblQ9Nc=";
+    })
   ];
 
   postPatch = ''
