@@ -11,11 +11,11 @@
 }:
 
 let
-  rev = "01a3b1ed08bc8f33fc25ee12d2b6e191a9963b38";
-  hash = "sha256-GFRGB8n84MuixVcyKnLRfGKO0YajxOjiEH/a5lixg1Q=";
+  rev = "65b6ee1ba262fa47eca538cf9892503dc205d65b";
+  hash = "sha256-kwuUKqjRSTaOyYVe5ENmczFcga8krq5+/nqbjz5EujE=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
-  version = "git-${rev}";
+  version = "git-${lib.sources.shortRev rev}";
 
   src = fetchFromGitHub {
     inherit rev hash;
@@ -41,20 +41,24 @@ in stdenv.mkDerivation (finalAttrs: {
       --replace-fail "/bin/curl" ${lib.getExe curl}
   '';
 
-
   installPhase = ''
     runHook preInstall
 
-    mkdir -p $out/lib
-    cp bin/SLSsteam.so $out/lib/
-    cp bin/library-inject.so $out/lib/
+    install -D bin/SLSsteam.so bin/library-inject.so -t $out/lib/
 
     runHook postInstall
   '';
+ 
+  passthru = let
+    pkg = finalAttrs.finalPackage;
+  in {
+    LD_AUDIT = "${pkg}/lib/library-inject.so:${pkg}/lib/SLSsteam.so";
+  };
 
   meta = {
     description = "Steamclient Modification for Linux";
     homepage = "https://github.com/AceSLS/SLSsteam";
     license = lib.licenses.agpl3Only;
+    platforms = lib.platforms.linux;
   };
 })
