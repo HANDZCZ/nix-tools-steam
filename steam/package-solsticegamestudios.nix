@@ -19,9 +19,9 @@ let
       hash = "sha256-MGhzIAy5uLulb57oz6OZ7pHFweHIDxi0WyjnPfGsA/k=";
     };
   });
-in python3Packages.buildPythonPackage {
+in python3Packages.buildPythonPackage (finalAttrs: {
   pname = "steam";
-  version = "git-${rev}";
+  version = "2.0.0a1.post1+g${lib.sources.shortRev rev}";
   pyproject = true;
 
   src = fetchFromGitHub {
@@ -44,10 +44,15 @@ in python3Packages.buildPythonPackage {
     zstandard
   ];
 
+  postPatch = ''
+    substituteInPlace setup.py \
+      --replace-fail "version=__version__" "version='${finalAttrs.version}'"
+  '';
+
   meta = {
     description = "Python package for interacting with Steam";
     homepage = "https://github.com/solsticegamestudios/steam";
     license = lib.licenses.mit;
     platforms = lib.platforms.linux;
   };
-}
+})
