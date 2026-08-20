@@ -40,7 +40,7 @@ let
   );
 in stdenv.mkDerivation (finalAttrs: {
   pname = "gbe-tools";
-  version = "git-${rev}";
+  version = "git-${lib.sources.shortRev rev}";
 
   src = fetchFromGitHub {
     inherit rev hash;
