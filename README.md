@@ -4,8 +4,9 @@
 This repository provides multiple packages for working with steam and steam games.
 Such as [gbe_fork_tools](https://github.com/Detanup01/gbe_fork_tools) for Goldberg emulator (specifically [gbe_fork](https://github.com/Detanup01/gbe_fork)),
 repackaged accela from AppImage,
-[SLSsteam](https://github.com/AceSLS/SLSsteam) 32bit libs
-and [SamRewritten](https://github.com/PaulCombal/SamRewritten) (achievements manager).
+[SLSsteam](https://github.com/AceSLS/SLSsteam) 32bit libs,
+[SamRewritten](https://github.com/PaulCombal/SamRewritten) (achievements manager)
+and HV bypass stuff (UMIP, CPUID faulting).
 
 It also provides dev shell containing gbe_tools, accela and SamRewritten, with or without bubblewrap for sandboxing.
 
@@ -29,13 +30,14 @@ If some package stops working, try removing nixpkgs override.
 ## How to install SLSsteam
 
 To install SLSsteam you just need to override steam package and add `LD_AUDIT="/PATH_TO_PKG/library-inject.so:/PATH_TO_PKG/SLSsteam.so"` environmental variable.
+You can do this manually by referring to the package and filling in the paths or by using `LD_AUDIT` from `passthru` defined in the package.
 
 Something like this:
 ```nix
 programs.steam.package = let
   sls-steam = inputs.nix-tools-steam.packages.${pkgs.stdenv.hostPlatform.system}.sls-steam;
 in pkgs.steam.override {
-  extraEnv.LD_AUDIT = "${sls-steam}/lib/library-inject.so:${sls-steam}/lib/SLSsteam.so";
+  extraEnv.LD_AUDIT = sls-steam.passthru.LD_AUDIT;
 };
 ```
 
@@ -44,7 +46,7 @@ in pkgs.steam.override {
 For hypervisor bypass, you need:
 1. UMIP (User Mode Instruction Prevention) to return the right values
 1. support for CPUID Faulting
-1. modified proton build
+1. modified proton build (or runtime module)
 
 > In some games, you will need to replace `reflex.dll`, and some games won't even run until the bypass gets updated.
 
@@ -53,7 +55,7 @@ UMIP support is achieved in multiple ways, and you should only **choose one**.
 - patch the kernel
 - use a kernel module (recommended)
 
-For cpus that don't support CPUID Faulting, you will need to enable the cpuid_fault_emulation kernel module.
+For cpus that don't support CPUID Faulting, you will need to enable the `cpuid_fault_emulation` kernel module.
 For this kernel module, you can also choose to load it on boot,
 but if you choose to do so, you won't have hardware virtualisation!
 
