@@ -7,12 +7,13 @@
   openssl,
   curl,
   libnotify,
+  luajit_2_1,
   ...
 }:
 
 let
-  rev = "65b6ee1ba262fa47eca538cf9892503dc205d65b";
-  hash = "sha256-kwuUKqjRSTaOyYVe5ENmczFcga8krq5+/nqbjz5EujE=";
+  rev = "bbe1e3f42710eb520e59ae3cf7b02205aa00ade7";
+  hash = "sha256-iD2xoF8NPxhNGXiOoWqDNEFNFYoESQdRdem8wHdHpJ0=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
   version = "git-${lib.sources.shortRev rev}";
@@ -32,6 +33,7 @@ in stdenv.mkDerivation (finalAttrs: {
     openssl
     curl
     libnotify
+    luajit_2_1
   ];
 
   postPatch = ''
