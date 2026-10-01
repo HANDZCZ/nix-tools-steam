@@ -12,8 +12,9 @@
 }:
 
 let
-  rev = "bbe1e3f42710eb520e59ae3cf7b02205aa00ade7";
-  hash = "sha256-iD2xoF8NPxhNGXiOoWqDNEFNFYoESQdRdem8wHdHpJ0=";
+  branch = "main";
+  rev = "9c829a7ddae52b6fdeee37933a83e8d6f4b9f1c6";
+  hash = "sha256-c5pYwtlTd3l4RHh484COxuKIz/zkldL0Flxz3oBOSVM=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
   version = "git-${lib.sources.shortRev rev}";
@@ -41,6 +42,11 @@ in stdenv.mkDerivation (finalAttrs: {
       --replace-fail "notify-send" ${lib.getExe libnotify}
     substituteInPlace ./src/curl.cpp \
       --replace-fail "/bin/curl" ${lib.getExe curl}
+
+    patchShebangs ./embed-version.sh ./embed-config.sh
+    substituteInPlace ./embed-version.sh \
+      --replace-fail "\$BRANCH" ${branch} \
+      --replace-fail "\$LAST_COMMIT_HASH" ${rev}
   '';
 
   installPhase = ''
