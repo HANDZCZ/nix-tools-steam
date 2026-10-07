@@ -35,6 +35,11 @@
       };
 
       flake = {
+        hydraJobs = {
+          inherit (self) packages;
+          nixosConfigurations = builtins.mapAttrs (n: v: v.config.system.build.toplevel) self.nixosConfigurations;
+        };
+
         mkKernelPackages = linuxPackages: {
           hv-bypass = {
             cpuid_fault_emulation = linuxPackages.callPackage ./HV_bypass/cpuid_fault_emulation/package.nix {};
@@ -51,6 +56,13 @@
             system = "x86_64-linux";
             modules = [
               ({ lib, ... }: {
+                # dummy config
+                boot.loader.grub.enable = false;
+                fileSystems."/" = {
+                  device = "/dev/null";
+                  fsType = "btrfs";
+                };
+
                 services.xserver.xkb.layout = "cz";
                 console = {
                   font = "Lat2-Terminus16";
