@@ -13,8 +13,8 @@
 
 let
   branch = "main";
-  rev = "9c829a7ddae52b6fdeee37933a83e8d6f4b9f1c6";
-  hash = "sha256-c5pYwtlTd3l4RHh484COxuKIz/zkldL0Flxz3oBOSVM=";
+  rev = "136f614f979d6038f7cee1bc6db5261539a5ac9e";
+  hash = "sha256-qTgWYsCg/pi6wI1PM4lolldIUNhokvsalfYbyjfIoKk=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
   version = "git-${lib.sources.shortRev rev}";
