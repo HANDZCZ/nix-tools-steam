@@ -13,16 +13,16 @@
 
 rustPlatform.buildRustPackage (finalAttrs: {
   pname = "SamRewritten";
-  version = "1.6.2";
+  version = "1.6.5";
 
   src = fetchFromGitHub {
     owner = "PaulCombal";
     repo = "SamRewritten";
     tag = "v${finalAttrs.version}";
-    hash = "sha256-RNoxwfvaKTeY9+Oq95Q4stZUmsgRMnA5WLS/yIgNPiI=";
+    hash = "sha256-DtcvAaON2qfeexj2lJaRFx1bromXoS9a9XbyKND98y0=";
   };
 
-  cargoHash = "sha256-H/si2RANmw+m+4tsyedtERzIjRNJSJy27r1LwSCuRbU=";
+  cargoHash = "sha256-D8wefWRSbWoohDqB8CdugdLxDGlY+uccS+j+c/9jkjw=";
 
   dontWrapGApps = true;
 
@@ -32,6 +32,7 @@ rustPlatform.buildRustPackage (finalAttrs: {
   checkFlags = [
     # In sandbox we can't connect to steam and run these tests
     "--skip=backend::tests::tests::"
+    "--skip=backend::app_lister::tests::a_failing_source_falls_through_to_the_next"
   ];
 
   nativeBuildInputs = [
