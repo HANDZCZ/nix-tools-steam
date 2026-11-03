@@ -41,6 +41,22 @@ in pkgs.steam.override {
 };
 ```
 
+### How to install/use steamnetsock-patch for SLSsteam
+
+If you are managing your steam games with nix you can add `LD_AUDIT` to launch options (or environment) for that game.
+Otherwise you need to add it manually. For that you need the package to be built and available at some path.
+
+Example usage:
+```nix
+# Makes the patch available at /run/SLSsteam/tools/steamnetsock-patch.so system-wide through a symlink
+# Use it by adding LD_AUDIT="/run/SLSsteam/tools/steamnetsock-patch.so" to game's launch options
+systemd.tmpfiles.rules = let
+  nix-tools-steam_packages = inputs.nix-tools-steam.packages.${pkgs.stdenv.hostPlatform.system};
+in [
+  "L+ /run/SLSsteam/tools/steamnetsock-patch.so - - - - ${nix-tools-steam_packages.steamnetsock-patch.passthru.LD_AUDIT}"
+];
+```
+
 ## How to install/enable hypervisor bypass
 
 For hypervisor bypass, you need:
