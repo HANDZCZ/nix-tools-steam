@@ -9,6 +9,7 @@
   pkgs = {
     steam-solsticegamestudios = pkgs.callPackage ./steam/package-solsticegamestudios.nix {};
     sls-steam = pkgs.pkgsi686Linux.callPackage ./SLSsteam/package.nix {};
+    steamnetsock-patch = pkgs.callPackage ./SLSsteam/steamnetsock-patch.nix {};
   };
 }
 
