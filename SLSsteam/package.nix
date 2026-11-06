@@ -8,6 +8,10 @@
   curl,
   libnotify,
   luajit_2_1,
+  fetchpatch2,
+
+  # Set to off by default, since upstream removed the feature
+  parental-bypass-patch ? false,
   ...
 }:
 
@@ -24,6 +28,15 @@ in stdenv.mkDerivation (finalAttrs: {
     owner = "AceSLS";
     repo = "SLSsteam";
   };
+
+  patches = lib.optional parental-bypass-patch (fetchpatch2 {
+    # revert the commit that removed the feature
+    # related issue: https://github.com/AceSLS/SLSsteam/issues/166
+    name = "Add-parental-settings-bypass.patch";
+    url = "https://github.com/AceSLS/SLSsteam/commit/188ad060f8e924faf59e34a7365fbf141181f80b.patch?full_index=1";
+    hash = "sha256-Y8jHzbbdrhc99NnhjllopXuRSVkd+CRyXk37YEQ8fls=";
+    revert = true;
+  });
 
   nativeBuildInputs = [
     makeWrapper
