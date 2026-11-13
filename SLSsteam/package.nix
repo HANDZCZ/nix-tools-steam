@@ -6,7 +6,7 @@
   lib,
   openssl,
   curl,
-  libnotify,
+  dbus,
   luajit_2_1,
   fetchpatch2,
 
@@ -17,8 +17,8 @@
 
 let
   branch = "main";
-  rev = "c61443a826a3cf58b76da97c62b33bc5db9800b1";
-  hash = "sha256-kjIYUivUuOuw6ISfmkJ9T3n/WWW+74zxXG2yIKYUq3Y=";
+  rev = "4dec48344c51c8180a23d914e5522a9ab0ed70f5";
+  hash = "sha256-lNs5Vm8eR3+10Jt4V/8J2y/InWnlqXCfnWAn0uNjOKY=";
 in stdenv.mkDerivation (finalAttrs: {
   pname = "SLSsteam";
   version = "git-${lib.sources.shortRev rev}";
@@ -46,16 +46,11 @@ in stdenv.mkDerivation (finalAttrs: {
   buildInputs = [
     openssl
     curl
-    libnotify
+    dbus
     luajit_2_1
   ];
 
   postPatch = ''
-    substituteInPlace ./src/log.cpp \
-      --replace-fail "notify-send" ${lib.getExe libnotify}
-    substituteInPlace ./src/curl.cpp \
-      --replace-fail "/bin/curl" ${lib.getExe curl}
-
     patchShebangs ./embed-version.sh ./embed-config.sh
     substituteInPlace ./embed-version.sh \
       --replace-fail "\$BRANCH" ${branch} \
@@ -65,7 +60,7 @@ in stdenv.mkDerivation (finalAttrs: {
   installPhase = ''
     runHook preInstall
 
-    install -D bin/SLSsteam.so bin/library-inject.so -t $out/lib/
+    install -D bin/SLSsteam.so -t $out/lib/
 
     runHook postInstall
   '';
@@ -73,7 +68,7 @@ in stdenv.mkDerivation (finalAttrs: {
   passthru = let
     pkg = finalAttrs.finalPackage;
   in {
-    LD_AUDIT = "${pkg}/lib/library-inject.so:${pkg}/lib/SLSsteam.so";
+    LD_AUDIT = "${pkg}/lib/SLSsteam.so";
   };
 
   meta = {
